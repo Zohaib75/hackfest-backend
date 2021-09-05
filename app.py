@@ -1,10 +1,12 @@
 import os
 from flask import Flask, request, abort
 from werkzeug.utils import secure_filename
+from flask_cors import CORS, cross_origin
 
 app=Flask(__name__)
+cors = CORS(app)
 
-app.secret_key = "secret key"
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # Get current path
@@ -24,7 +26,8 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['POST'])
+@app.route('/file', methods=['POST'])
+@cross_origin()
 def upload_file():
     if request.method == 'POST':
 
@@ -37,7 +40,9 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             comments = request.form.get('comments')
-            return 'File successfully uploaded' # add result string here
+            return {
+                "result": 50.56,
+            }
 
         abort(400, 'File Type not allowed.') 
 
