@@ -36,6 +36,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            comments = request.form.get('comments')
             return 'File successfully uploaded' # add result string here
 
         abort(400, 'File Type not allowed.') 
